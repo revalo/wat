@@ -1,0 +1,74 @@
+{% extends "wrapper.html" %}
+{% block title %}edit{% endblock %}
+
+{% block content %}
+<div class="editor" id="editor">
+    <div class="left-float" v-if="selectedCourses.length != 0">
+        <a href="{{ url_for('main') }}">
+            <button class="green">
+                Done
+            </button>
+        </a>
+    </div>
+    <div class="right-float">
+        <a href="{{ url_for('logout') }}">
+            <button class="blue">
+                Logout {{ user.email.split('@')[0] }}
+            </button>
+        </a>
+    </div>
+    <div class="clear"></div>
+    <h1>
+        What classes are you taking?
+    </h1>
+    
+    <div class="editor-table-container">
+        <table class="centered" v-cloak>
+            <tr v-for="course in selectedCourses">
+                {% raw %}
+                <td class="space" >
+                    <button @click="removeCourse(course)" class="delete">-</button>
+                </td>
+                <td class="code space">{{ course.code }}</td>
+                <td class="n space">{{ course.name }}</td>
+                {% endraw %}
+            </tr>
+        </table>
+    </div>
+
+    <div class="inputter">
+        <input v-model="newCourse"
+               class="classbox"
+               type="text"
+               placeholder="Class Number or Name"
+               onblur="this.focus()"
+               :autofocus="'autofocus'"
+               autocomplete="off"
+               list="results"
+               @input="autocomplete"
+               @keyup.enter="addCourse">
+        <button class="add" @click="addCourse">Add</button>
+    </div>
+
+    <datalist id="results">
+        {% raw %}
+        <option v-for="result in results" :value="result.code">
+            {{ result.name }}
+        </option>
+        {% endraw %}
+    </datalist>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    var alreadySelected = [];
+    {% for course in current_classes %}
+    alreadySelected.push({
+        name: "{{course.name}}",
+        code: "{{course.code}}",
+    });
+    {% endfor %}
+</script>
+<script src="{{ url_for('static', filename='editor.js') }}"></script>
+{% endblock %}

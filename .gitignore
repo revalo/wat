@@ -1,0 +1,6 @@
+*.pyc
+__pycache__/
+.vscode/
+store/*.json
+config.py
+constants.py

@@ -1,0 +1,20 @@
+{% extends "wrapper.html" %}
+{% block title %}login{% endblock %}
+
+{% block content %}
+<div class="flex-container">
+    <div class="login">
+        <h1>
+            What classes are you taking?
+        </h1>
+        <br><br><br><br><br><br>
+        <div class="right-float">
+            <a href="{{ url_for('login_page') }}">
+                <button class="red">
+                    LOGIN
+                </button>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

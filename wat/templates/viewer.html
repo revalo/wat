@@ -1,0 +1,66 @@
+{% extends "wrapper.html" %}
+{% block title %}search{% endblock %}
+
+{% block content %}
+<div id="viewer">
+    <div class="viewer">
+        <div class="left-float">
+            <a href="{{ url_for('edit') }}">
+                <button class="green">
+                    Edit
+                </button>
+            </a>
+        </div>
+        <div class="right-float">
+            <a href="{{ url_for('logout') }}">
+                <button class="blue">
+                    Logout
+                </button>
+            </a>
+        </div>
+        <div class="clear"></div>
+        <h1>
+            What classes are everyone taking?
+        </h1>
+    </div>
+    <div class="searcher">
+        <input v-model="query"
+                class="searchbox"
+                type="text"
+                placeholder="Search Class / Name / Kerb / Mailing List"
+                onblur="this.focus()"
+                :autofocus="'autofocus'"
+                autocomplete="off"
+                @input="debounceSearch"
+                @keyup.enter="doSearch">
+    </div>
+
+    <div class="results">
+        {% raw %}
+        <div class="row" v-for="i in rowCount" v-cloak>
+            <div class="column" v-for="item in itemCountInRow(i)">
+                <div class="card">
+                    <div class="card-header">{{ item.kerb }}</div>
+                    <table class="card">
+                        <tr v-for="course in item.courses">
+                            <td class="class-cell">
+                                <a :href="'http://student.mit.edu/catalog/search.cgi?search='+course.code">
+                                {{ course.code }}
+                                </a>
+                            </td>
+                            <td class="name-cell">
+                                {{ course.name }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endraw %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='viewer.js') }}"></script>
+{% endblock %}
