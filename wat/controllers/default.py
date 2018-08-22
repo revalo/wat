@@ -5,8 +5,17 @@ from wat.models.course import Course
 from wat.models.user import User
 from wat.mailinglists.ml import get_list_members
 
-from flask import redirect, url_for, render_template, jsonify
+from flask import redirect, url_for, render_template, jsonify, send_from_directory
 from sqlalchemy.sql import text
+
+import os
+
+
+@app.route("/favicon.ico")
+def favicon():
+    return send_from_directory(
+        os.path.join(app.root_path, "static"), "favicon.png", mimetype="image/png"
+    )
 
 
 @app.route("/")
