@@ -31,20 +31,20 @@ def main():
 
     return render_template("viewer.html", user=user, current_classes=current_classes)
 
+
 def results_json(results):
-    return jsonify([
-        {
-            'kerb': x.email.split('@')[0],
-            'courses': [
-                {
-                    'name': name,
-                    'code': code,
-                }
-                for name, code in zip(x.names, x.codes)
-            ]
-        }
-        for x in results
-    ])
+    return jsonify(
+        [
+            {
+                "kerb": x.email.split("@")[0],
+                "courses": [
+                    {"name": name, "code": code} for name, code in zip(x.names, x.codes)
+                ],
+            }
+            for x in results
+        ]
+    )
+
 
 @app.route("/api/classes/common")
 @requires_auth()
@@ -66,12 +66,10 @@ def common_search():
     GROUP BY email LIMIT 50;
     """
 
-    results = db.engine.execute(text(query), {
-        'codes': class_codes,
-        'user_id': user.id,
-    })
+    results = db.engine.execute(text(query), {"codes": class_codes, "user_id": user.id})
 
     return results_json(results)
+
 
 @app.route("/api/classes/search/<q>/by/<by>")
 @requires_auth()
@@ -86,7 +84,7 @@ def search(q, by):
         u.id = o.user_id AND u.id != :user_id AND split_part(u.email, '@', 1) IN :search
         GROUP BY email LIMIT 20;
         """
-        q = q.split('@')[0]
+        q = q.split("@")[0]
     elif by == "user":
         query = """
         SELECT email, array_agg(code) AS codes, array_agg(o.name) AS names FROM course o, "user" u WHERE
@@ -102,21 +100,16 @@ def search(q, by):
         """
 
     if by != "ml":
-        results = db.engine.execute(text(query), {
-            'search': '%' + q + '%',
-            'user_id': user.id,
-        })
+        results = db.engine.execute(
+            text(query), {"search": "%" + q + "%", "user_id": user.id}
+        )
     else:
         members = get_list_members(q)
         if len(members) == 0:
-            return jsonify({
-                "error": "Invalid list name or hidden list :/"
-            })
+            return jsonify({"error": "Invalid list name or hidden list :/"})
 
-        results = db.engine.execute(text(query), {
-            'search': tuple(members),
-            'user_id': user.id,
-        })
-        
+        results = db.engine.execute(
+            text(query), {"search": tuple(members), "user_id": user.id}
+        )
 
     return results_json(results)

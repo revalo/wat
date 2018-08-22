@@ -144,6 +144,7 @@ def logout():
     response.set_cookie("jwt", "")
     return response
 
+
 @app.route("/debug/login/<kerb>")
 def debug_fake_person(kerb):
     email = kerb + "@mit.edu"
@@ -159,8 +160,6 @@ def debug_fake_person(kerb):
     token = encode_token(user)
     response = app.make_response(redirect("/"))
     response.set_cookie(
-        "jwt",
-        token,
-        expires=datetime.datetime.now() + datetime.timedelta(days=90),
+        "jwt", token, expires=datetime.datetime.now() + datetime.timedelta(days=90)
     )
     return response

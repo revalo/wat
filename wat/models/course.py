@@ -4,8 +4,10 @@ from flask_sqlalchemy import BaseQuery
 from sqlalchemy_searchable import SearchQueryMixin
 from sqlalchemy_utils.types import TSVectorType
 
+
 class CourseQuery(BaseQuery, SearchQueryMixin):
     pass
+
 
 class Course(db.Model):
     query_class = CourseQuery
