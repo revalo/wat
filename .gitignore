@@ -4,3 +4,4 @@ __pycache__/
 store/*.json
 config.py
 constants.py
+mailinglists/

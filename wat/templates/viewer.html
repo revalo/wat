@@ -24,15 +24,32 @@
         </h1>
     </div>
     <div class="searcher">
-        <input v-model="query"
-                class="searchbox"
-                type="text"
-                placeholder="Search Class / Name / Kerb / Mailing List"
-                onblur="this.focus()"
-                :autofocus="'autofocus'"
-                autocomplete="off"
-                @input="debounceSearch"
-                @keyup.enter="doSearch">
+        <table>
+            <tr>
+            <td>
+            <input v-model="query"
+                    class="searchbox"
+                    type="text"
+                    placeholder="Search"
+                    onblur="this.focus()"
+                    :autofocus="'autofocus'"
+                    autocomplete="off"
+                    @input="debounceSearch"
+                    @keyup.enter="doSearch">
+            </td>
+            <td>
+            <select class="search" v-model="searchby">
+                <option value="user">People</option>
+                <option value="class">Classes</option>
+                <option value="ml">Mailing List</option>
+            </select>
+            </td>
+            </tr>
+        </table>
+
+        <p class="error" v-if="err != ''" v-cloak>Invalid mailing list or hidden 🤔</p>
+        <p class="error" v-if="nores" v-cloak>No results found 😔</p>
+        <div class="loader" v-if="loading"></div>
     </div>
 
     <div class="results">
