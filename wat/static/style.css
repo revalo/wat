@@ -7,12 +7,13 @@ body {
 }
 
 .flex-container {
-    height: 100%;
+    height: 25rem;
     padding: 0;
     margin: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
 }
 
 h1 {
@@ -114,6 +115,13 @@ td.space {
 
 .editor-table-container {
     width: 100%;
+}
+
+.footer {
+    width: 100%;
+    text-align: center;
+    font-family: 'Roboto';
+    font-size: 0.8em;
 }
 
 table.centered {
