@@ -113,7 +113,7 @@ def search(q, by):
             text(query), {"search": "%" + q + "%", "user_id": user.id}
         )
     else:
-        members = get_list_members(q)
+        members = get_list_members(q.lower())
         if len(members) == 0:
             return jsonify({"error": "Invalid list name or hidden list :/"})
 
