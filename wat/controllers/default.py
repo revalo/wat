@@ -97,7 +97,7 @@ def search(q, by):
     elif by == "user":
         query = """
         SELECT email, array_agg(code) AS codes, array_agg(o.name) AS names FROM course o, "user" u WHERE
-        u.id = o.user_id AND u.id != :user_id AND split_part(u.email, '@', 1) ilike :search
+        u.id = o.user_id AND u.id != :user_id AND (split_part(u.email, '@', 1) ilike :search OR u.name ilike :search)
         GROUP BY email LIMIT 20;
         """
     else:
