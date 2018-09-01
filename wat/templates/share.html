@@ -2,6 +2,7 @@
 
 {% block content %}
 <div id="viewer">
+    {% if target_user %}
     <div class="viewer">
         <div class="clear"></div>
         <h1>
@@ -34,5 +35,18 @@
             <button class="red">Explore Others</button>
         </a>
     </div>
+    {% else %}
+    <div class="viewer">
+        <div class="clear"></div>
+        <h1>
+            404 Not found 😶
+        </h1>
+    </div>
+    <div class="searcher pb">
+        <a href="{{ url_for('index') }}">
+            <button class="red">Continue</button>
+        </a>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

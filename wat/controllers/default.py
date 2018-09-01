@@ -40,7 +40,11 @@ def index():
 @get_user()
 def share_render(kerberos):
     target_user = User.query.filter(User.email == (kerberos + '@mit.edu')).first()
-    courses = Course.query.filter(Course.user_id == target_user.id)
+
+    if target_user:
+        courses = Course.query.filter(Course.user_id == target_user.id)
+    else:
+        courses = None
 
     return render_template("share.html", target_user=target_user, courses=courses)
 
