@@ -283,3 +283,15 @@ select.search {
     padding-top: 1rem;
     padding-bottom: 1rem;
 }
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.si {
+    width: 20px;
+    height: 20px;
+    opacity: 0.5;
+    margin-top: 0.6rem;
+}

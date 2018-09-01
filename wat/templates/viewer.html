@@ -3,19 +3,26 @@
 {% block content %}
 <div id="viewer">
     <div class="viewer">
-        <div class="left-float">
-            <a href="{{ url_for('edit') }}">
-                <button class="green">
-                    Edit
-                </button>
-            </a>
-        </div>
-        <div class="right-float">
-            <a href="{{ url_for('logout') }}">
-                <button class="blue">
-                    Logout
-                </button>
-            </a>
+        <div class="top-bar">
+            <div>
+                <a href="{{ url_for('edit') }}">
+                    <button class="green">
+                        Edit
+                    </button>
+                </a>
+            </div>
+            <div>
+                <a href="{{ url_for('share_render', kerberos=user.email.split('@')[0]) }}" target="_blank">
+                    <img class="si" src="{{ url_for('static', filename='share.png') }}" alt="">
+                </a>
+            </div>
+            <div>
+                <a href="{{ url_for('logout') }}">
+                    <button class="blue">
+                        Logout
+                    </button>
+                </a>
+            </div>
         </div>
         <div class="clear"></div>
         <h1>
@@ -80,5 +87,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='viewer.js') }}?v=0.1"></script>
+<script src="{{ url_for('static', filename='viewer.js') }}?v=0.2"></script>
 {% endblock %}
