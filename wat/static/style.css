@@ -278,3 +278,8 @@ select.search {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+.pb {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}

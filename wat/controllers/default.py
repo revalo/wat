@@ -5,10 +5,19 @@ from wat.models.course import Course
 from wat.models.user import User
 from wat.mailinglists.ml import get_list_members
 
-from flask import redirect, url_for, render_template, jsonify, send_from_directory
+from flask import (
+    redirect,
+    url_for,
+    render_template,
+    jsonify,
+    send_from_directory,
+    request,
+)
 from sqlalchemy.sql import text
 
 import os
+
+PAGE_SIZE = 20
 
 
 @app.route("/favicon.ico")
@@ -62,6 +71,8 @@ def common_search():
     if len(current_classes) == 0:
         return "First fill in classes :/"
 
+    OFFSET = request.args.get("page", default=0, type=int) * PAGE_SIZE
+
     class_codes = "(%s)" % (
         ",".join(tuple(["'%s'" % course.code for course in current_classes]))
     )
@@ -72,10 +83,18 @@ def common_search():
     SELECT email, array_agg(code) AS codes, array_agg(o.name) AS names FROM course o, "user" u WHERE EXISTS (
         SELECT 1 FROM course c WHERE c.code IN :codes AND c.user_id = o.user_id
     ) AND u.id = o.user_id AND u.id != :user_id
-    GROUP BY email LIMIT 50;
+    GROUP BY email LIMIT :limit OFFSET :offset;
     """
 
-    results = db.engine.execute(text(query), {"codes": class_codes, "user_id": user.id})
+    results = db.engine.execute(
+        text(query),
+        {
+            "codes": class_codes,
+            "user_id": user.id,
+            "limit": PAGE_SIZE,
+            "offset": OFFSET,
+        },
+    )
 
     return results_json(results)
 
@@ -87,30 +106,38 @@ def search(q, by):
     if len(current_classes) == 0:
         return "First fill in classes :/"
 
+    OFFSET = request.args.get("page", default=0, type=int) * PAGE_SIZE
+
     if by == "ml":
         query = """
         SELECT email, array_agg(code) AS codes, array_agg(o.name) AS names FROM course o, "user" u WHERE
         u.id = o.user_id AND u.id != :user_id AND split_part(u.email, '@', 1) IN :search
-        GROUP BY email LIMIT 20;
+        GROUP BY email LIMIT :limit OFFSET :offset;
         """
         q = q.split("@")[0]
     elif by == "user":
         query = """
         SELECT email, array_agg(code) AS codes, array_agg(o.name) AS names FROM course o, "user" u WHERE
         u.id = o.user_id AND u.id != :user_id AND (split_part(u.email, '@', 1) ilike :search OR u.name ilike :search)
-        GROUP BY email LIMIT 20;
+        GROUP BY email LIMIT :limit OFFSET :offset;
         """
     else:
         query = """
         SELECT email, array_agg(code) AS codes, array_agg(o.name) AS names FROM course o, "user" u WHERE EXISTS (
             SELECT 1 FROM course c WHERE (c.code ilike :search OR c.name ilike :search) AND c.user_id = o.user_id
         ) AND u.id = o.user_id AND u.id != :user_id
-        GROUP BY email LIMIT 20;
+        GROUP BY email LIMIT :limit OFFSET :offset;
         """
 
     if by != "ml":
         results = db.engine.execute(
-            text(query), {"search": "%" + q + "%", "user_id": user.id}
+            text(query),
+            {
+                "search": "%" + q + "%",
+                "user_id": user.id,
+                "limit": PAGE_SIZE,
+                "offset": OFFSET,
+            },
         )
     else:
         members = get_list_members(q.lower())
@@ -118,7 +145,13 @@ def search(q, by):
             return jsonify({"error": "Invalid list name or hidden list :/"})
 
         results = db.engine.execute(
-            text(query), {"search": tuple(members), "user_id": user.id}
+            text(query),
+            {
+                "search": tuple(members),
+                "user_id": user.id,
+                "limit": PAGE_SIZE,
+                "offset": OFFSET,
+            },
         )
 
     return results_json(results)
