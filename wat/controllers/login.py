@@ -143,23 +143,3 @@ def logout():
     response = app.make_response(redirect("/"))
     response.set_cookie("jwt", "")
     return response
-
-
-@app.route("/debug/login/<kerb>")
-def debug_fake_person(kerb):
-    email = kerb + "@mit.edu"
-    user = User.query.filter_by(email=email).first()
-    if user is None:
-        # Initialize the user with a very old last_post time
-        user = User(
-            email=email, name="Fake User", last_activity=datetime.datetime.now()
-        )
-        db.session.add(user)
-        db.session.commit()
-
-    token = encode_token(user)
-    response = app.make_response(redirect("/"))
-    response.set_cookie(
-        "jwt", token, expires=datetime.datetime.now() + datetime.timedelta(days=90)
-    )
-    return response
