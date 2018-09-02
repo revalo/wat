@@ -50,9 +50,9 @@ def share_render(kerberos):
 @get_user()
 def main():
     if user:
-        current_classes = Course.query.filter(Course.user_id == user.id)
+        current_classes = Course.query.filter(Course.user_id == user.id).all()
         if len(current_classes) == 0:
-            return redirect(url_for("/edit"))
+            return redirect(url_for("edit"))
     else:
         current_classes = []
 
