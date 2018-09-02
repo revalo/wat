@@ -46,7 +46,7 @@ def courses_api():
                 final_adds.append(current)
                 final_codes[current["no"]] = True
 
-        final_adds = final_adds[:18]
+        final_adds = final_adds[:10]
         already_codes = {}
 
         # Deletion phase.
