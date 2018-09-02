@@ -3,6 +3,7 @@
 {% block content %}
 <div id="viewer">
     <div class="viewer">
+        {% if user %}
         <div class="top-bar">
             <div>
                 <a href="{{ url_for('edit') }}">
@@ -24,6 +25,17 @@
                 </a>
             </div>
         </div>
+        {% else %}
+        <div class="top-bar-center">
+            <div>
+                <a href="{{ url_for('login_page') }}">
+                    <button class="blue">
+                        Login
+                    </button>
+                </a>
+            </div>
+        </div>
+        {% endif %}
         <div class="clear"></div>
         <h1>
             What classes is everyone taking?

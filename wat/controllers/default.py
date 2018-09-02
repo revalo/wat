@@ -30,10 +30,7 @@ def favicon():
 @app.route("/")
 @get_user()
 def index():
-    if user:
-        return redirect(url_for("main"))
-
-    return render_template("login.html")
+    return redirect(url_for("main"))
 
 
 @app.route("/<kerberos>")
@@ -50,15 +47,12 @@ def share_render(kerberos):
 
 
 @app.route("/classes")
-@requires_auth()
+@get_user()
 def main():
-    # Don't let the user view classes if they haven't
-    # added theirs.
-
-    if Course.query.filter(Course.user_id == user.id).first() is None:
-        return redirect(url_for("edit"))
-
-    current_classes = Course.query.filter(Course.user_id == user.id)
+    if user:
+        current_classes = Course.query.filter(Course.user_id == user.id)
+    else:
+        current_classes = []
 
     return render_template("viewer.html", user=user, current_classes=current_classes)
 
@@ -78,11 +72,14 @@ def results_json(results):
 
 
 @app.route("/api/classes/common")
-@requires_auth()
+@get_user()
 def common_search():
-    current_classes = Course.query.filter(Course.user_id == user.id).all()
-    if len(current_classes) == 0:
-        return "First fill in classes :/"
+    if user:
+        current_classes = Course.query.filter(Course.user_id == user.id).all()
+        search_id = user.id
+    else:
+        current_classes = Course.query.filter(Course.user_id == 1).all()
+        search_id = 1
 
     OFFSET = request.args.get("page", default=0, type=int) * PAGE_SIZE
 
@@ -103,7 +100,7 @@ def common_search():
         text(query),
         {
             "codes": class_codes,
-            "user_id": user.id,
+            "user_id": search_id,
             "limit": PAGE_SIZE,
             "offset": OFFSET,
         },
@@ -113,12 +110,7 @@ def common_search():
 
 
 @app.route("/api/classes/search/<q>/by/<by>")
-@requires_auth()
 def search(q, by):
-    current_classes = Course.query.filter(Course.user_id == user.id).all()
-    if len(current_classes) == 0:
-        return "First fill in classes :/"
-
     OFFSET = request.args.get("page", default=0, type=int) * PAGE_SIZE
 
     if by == "ml":
