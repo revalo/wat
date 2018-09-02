@@ -110,8 +110,14 @@ def common_search():
 
 
 @app.route("/api/classes/search/<q>/by/<by>")
+@get_user()
 def search(q, by):
     OFFSET = request.args.get("page", default=0, type=int) * PAGE_SIZE
+
+    if user:
+        search_user = user.id
+    else:
+        search_user = -1
 
     if by == "ml":
         query = """
@@ -139,7 +145,7 @@ def search(q, by):
             text(query),
             {
                 "search": "%" + q + "%",
-                "user_id": user.id,
+                "user_id": search_user,
                 "limit": PAGE_SIZE,
                 "offset": OFFSET,
             },
@@ -153,7 +159,7 @@ def search(q, by):
             text(query),
             {
                 "search": tuple(members),
-                "user_id": user.id,
+                "user_id": search_user,
                 "limit": PAGE_SIZE,
                 "offset": OFFSET,
             },
