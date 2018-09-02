@@ -51,6 +51,13 @@
             </tr>
         </table>
 
+        <div class="common-selector" v-if="searchby == 'ml'" v-cloak>
+            <button class="mlb" @click="sb('ec-discuss')">ec-discuss</button>
+            <button class="mlb" @click="sb('next-forum')">next-forum</button>
+            <button class="mlb" @click="sb('bc-talk')">bc-talk</button>
+            <button class="mlb" @click="sb('r-h-t')">r-h-t</button>
+        </div>
+
         <p class="error" v-if="err != ''" v-cloak>Invalid mailing list or hidden 🤔</p>
         <p class="error" v-if="nores" v-cloak>No results found 😔</p>
         <div class="loader" v-if="loading"></div>
@@ -87,5 +94,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='viewer.js') }}?v=0.2"></script>
+<script src="{{ url_for('static', filename='viewer.js') }}?v=0.3"></script>
 {% endblock %}

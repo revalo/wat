@@ -78,6 +78,10 @@ var viewer = new Vue({
             this.page++;
             this.doSearch(false);
         },
+        sb: function(q) {
+            this.query = q;
+            this.doSearch();
+        },
     },
     beforeMount: function() {
         this.loadCommon();
