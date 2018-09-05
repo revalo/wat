@@ -36,7 +36,7 @@ def index():
 @app.route("/<kerberos>")
 @get_user()
 def share_render(kerberos):
-    target_user = User.query.filter(User.email == (kerberos + '@mit.edu')).first()
+    target_user = User.query.filter(User.email == (kerberos + "@mit.edu")).first()
 
     if target_user:
         courses = Course.query.filter(Course.user_id == target_user.id)
