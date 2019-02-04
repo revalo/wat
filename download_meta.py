@@ -46,3 +46,4 @@ def strip_classes(classes_fn, stripped_fn):
 if __name__ == "__main__":
     download_firehose("store/classes.json")
     strip_classes("store/classes.json", "wat/static/classes.js")
+
